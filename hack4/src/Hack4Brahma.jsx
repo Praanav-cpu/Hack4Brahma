@@ -3,16 +3,7 @@ import Particles from './Particles'; // ✅ Importing Particles Component
 
 const Hack4Brahma = ({
   text = 'Hack4Brahma',
-  fontFamily = 'Compressa VF',
-  fontUrl = 'https://res.cloudinary.com/dr6lvwubh/raw/upload/v1529908256/CompressaPRO-GX.woff2',
-
-  width = true,
-  weight = true,
-  italic = true,
-  alpha = false,
-
   textColor = '#ffffff', // ✅ White text color
-  strokeColor = '#FF0000',
 }) => {
   const containerRef = useRef(null);
   const titleRef = useRef(null);
@@ -62,19 +53,8 @@ const Hack4Brahma = ({
           };
 
           const d = dist(mouseRef.current, charCenter);
-
-          const getAttr = (distance, minVal, maxVal) => {
-            const val = maxVal - Math.abs((maxVal * distance) / maxDist);
-            return Math.max(minVal, val + minVal);
-          };
-
-          const wdth = width ? Math.floor(getAttr(d, 5, 200)) : 100;
-          const wght = weight ? Math.floor(getAttr(d, 100, 900)) : 400;
-          const italVal = italic ? getAttr(d, 0, 1).toFixed(2) : 0;
-          const alphaVal = alpha ? getAttr(d, 0, 1).toFixed(2) : 1;
-
-          span.style.opacity = alphaVal;
-          span.style.fontVariationSettings = `'wght' ${wght}, 'wdth' ${wdth}, 'ital' ${italVal}`;
+          const scale = Math.max(1, 2 - d / maxDist);
+          span.style.transform = `scale(${scale})`;
         });
       }
 
@@ -83,7 +63,7 @@ const Hack4Brahma = ({
 
     animate();
     return () => cancelAnimationFrame(rafId);
-  }, [width, weight, italic, alpha, chars.length]);
+  }, [chars.length]);
 
   return (
     <div className="hack4brahma-container" ref={containerRef}>
@@ -98,7 +78,7 @@ const Hack4Brahma = ({
           <span
             key={i}
             ref={(el) => (spansRef.current[i] = el)}
-            data-char={char}
+            className={char === '4' ? 'post-nb large' : 'odibee'}
           >
             {char}
           </span>
@@ -107,11 +87,8 @@ const Hack4Brahma = ({
 
       {/* ✅ Styles */}
       <style>{`
-        @font-face {
-          font-family: '${fontFamily}';
-          src: url('${fontUrl}');
-          font-style: normal;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Odibee+Sans&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Post+No+Bills+Colombo:wght@700&display=swap');
 
         .hack4brahma-container {
           position: relative;
@@ -123,7 +100,7 @@ const Hack4Brahma = ({
           align-items: center;
           background: black;
         }
-
+        
         /* ✅ Fullscreen Particles */
         .particles-bg {
           position: absolute;
@@ -136,8 +113,6 @@ const Hack4Brahma = ({
 
         /* ✅ Centered Text */
         .hack4brahma-title {
-          font-family: '${fontFamily}';
-          text-transform: uppercase;
           font-size: 5vw;
           text-align: center;
           user-select: none;
@@ -145,6 +120,24 @@ const Hack4Brahma = ({
           z-index: 10;
           color: ${textColor};
           position: relative;
+          letter-spacing: 5px;
+          display: flex;
+          gap: 10px;
+        }
+        
+        .odibee {
+          font-family: 'Odibee Sans', sans-serif;
+          transition: transform 0.2s ease-out;
+        }
+
+        .post-nb {
+          font-family: 'Post No Bills Colombo', sans-serif;
+          transition: transform 0.2s ease-out;
+          color: green;
+        }
+
+        .large {
+          font-size: 5vw;
         }
       `}</style>
     </div>
