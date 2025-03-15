@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Renderer, Camera, Geometry, Program, Mesh } from "ogl";
-
 import './Particles.css';
 
 const defaultColors = ["#ffffff", "#ffffff", "#ffffff"];
@@ -16,7 +15,7 @@ const hexToRgb = (hex) => {
   const b = (int & 255) / 255;
   return [r, g, b];
 };
-
+ 
 const vertex = /* glsl */ `
   attribute vec3 position;
   attribute vec4 random;
