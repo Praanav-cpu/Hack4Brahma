@@ -37,6 +37,7 @@ gsap.registerPlugin(ScrollTrigger)
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
   const headerRef = useRef(null)
   const heroRef = useRef(null)
   const statsRef = useRef(null)
@@ -51,6 +52,17 @@ export default function Home() {
   const volunteersRef = useRef(null)
 
   useEffect(() => {
+    // Set loaded state after a short delay to trigger animations
+    const timer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    if (!isLoaded) return
+
     // Header animation
     gsap.from(headerRef.current, {
       y: -100,
@@ -178,7 +190,7 @@ export default function Home() {
       // Clean up ScrollTrigger instances
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }
-  }, [])
+  }, [isLoaded])
 
   const navItems = [
     { name: "Mission Brief", href: "#about" },
@@ -297,6 +309,26 @@ export default function Home() {
 
   return (
     <div className="relative bg-[#0a0c0f] text-gray-100 min-h-screen overflow-x-hidden">
+      {/* Splash Screen */}
+      {!isLoaded && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0c0f]">
+          <div className="text-center">
+            <div className="relative w-full h-[60vh] mb-8">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-32 h-32 border-4 border-green-500/50 rounded-full animate-ping"></div>
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Shield className="h-24 w-24 text-green-500 animate-pulse" />
+              </div>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4">
+              <span className="text-green-500">HACK</span>4<span className="text-green-500">BRAHMA</span>
+            </h1>
+            <p className="text-xl font-mono text-gray-400">INITIALIZING MISSION...</p>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header
         ref={headerRef}
@@ -360,26 +392,39 @@ export default function Home() {
         </div>
       )}
 
-      {/* Hero Section */}
-      <section
-        ref={heroRef}
-        className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden"
-        style={{
-          backgroundImage:
-            "linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('/placeholder.svg?height=1080&width=1920')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,100,0,0.1),transparent_70%)]"></div>
+      {/* Hero Section - CodeHunt Style */}
+      <section ref={heroRef} className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        {/* Background image with military ship/vehicle instead of sailing ship */}
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(10,12,15,0.7)] via-transparent to-[rgba(10,12,15,0.9)]"></div>
+          <Image
+            src="/placeholder.svg?height=1080&width=1920"
+            alt="Military Operation Background"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
 
+        {/* Military vehicle/ship overlay */}
+        <div className="absolute bottom-0 left-0 z-10 w-1/2 h-2/3 pointer-events-none">
+          <Image
+            src="/placeholder.svg?height=800&width=800"
+            alt="Military Vehicle"
+            width={800}
+            height={800}
+            className="object-contain object-bottom"
+          />
+        </div>
+
+        {/* Main content */}
         <div className="container mx-auto px-4 py-20 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <div className="inline-block px-3 py-1 mb-6 border border-green-500/50 bg-black/50 rounded-sm animate-in">
               <span className="font-mono text-green-500 text-sm tracking-wider">OPERATION HACKATHON</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-in">
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 animate-in">
               <span className="text-green-500">HACK</span>4<span className="text-green-500">BRAHMA</span>
             </h1>
 
@@ -403,6 +448,30 @@ export default function Home() {
             <div className="animate-in scroll-indicator">
               <ChevronDown className="h-8 w-8 mx-auto text-green-500 animate-bounce" />
             </div>
+          </div>
+        </div>
+
+        {/* Tactical overlay elements */}
+        <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-10 opacity-30">
+          {/* Radar scan effect */}
+          <div className="absolute top-20 right-20 w-40 h-40 border-2 border-green-500/30 rounded-full">
+            <div className="absolute inset-0 border-2 border-green-500/20 rounded-full animate-ping"></div>
+          </div>
+
+          {/* Grid lines */}
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(to right, rgba(0, 128, 0, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 128, 0, 0.1) 1px, transparent 1px)",
+              backgroundSize: "40px 40px",
+            }}
+          ></div>
+
+          {/* Coordinates */}
+          <div className="absolute bottom-10 left-10 font-mono text-green-500/70 text-sm">
+            <div>LAT: 12°58'N</div>
+            <div>LON: 77°35'E</div>
           </div>
         </div>
 
